@@ -23,32 +23,7 @@ jobs:
     - name: Install system packages
       run: |
         sudo apt-get update -qq
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-          build-essential \
-          git \
-          ffmpeg \
-          libsdl2-dev \
-          libsdl2-image-dev \
-          libsdl2-mixer-dev \
-          libsdl2-ttf-dev \
-          libportmidi-dev \
-          libswscale-dev \
-          libavformat-dev \
-          libavcodec-dev \
-          zlib1g-dev \
-          autoconf \
-          libtool \
-          pkg-config \
-          automake \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libtinfo5 \
-          cmake \
-          libopenjp2-7 \
-          libtiff5 \
-          openjdk-17-jdk \
-          zip \
-          unzip
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev autoconf libtool pkg-config automake libncurses5-dev libncursesw5-dev libtinfo5 cmake libopenjp2-7 libtiff5 openjdk-17-jdk zip unzip
 
     - name: Install Python packages
       run: |
@@ -58,28 +33,26 @@ jobs:
     - name: Create assets
       run: |
         mkdir -p assets
-        # Create simple placeholder images using ImageMagick or PIL
-        python3 << 'EOF'
-import sys
-try:
-    from PIL import Image
-    img = Image.new('RGB', (512, 512), (44, 62, 80))
-    img.save('assets/icon.png')
-    img = Image.new('RGB', (512, 512), (52, 73, 94))
-    img.save('assets/presplash.png')
-    print("Assets created successfully")
-    sys.exit(0)
-except Exception as e:
-    print(f"Error: {e}")
-    # Fallback: create minimal images
-    import base64
-    import os
-    for filename in ['icon.png', 'presplash.png']:
-        with open(f'assets/{filename}', 'wb') as f:
-            f.write(base64.b64decode(b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='))
-    print("Created placeholder assets")
-    sys.exit(0)
-EOF
+        python3 << 'PYEOF'
+        import sys
+        try:
+            from PIL import Image
+            img = Image.new('RGB', (512, 512), (44, 62, 80))
+            img.save('assets/icon.png')
+            img = Image.new('RGB', (512, 512), (52, 73, 94))
+            img.save('assets/presplash.png')
+            print("Assets created successfully")
+            sys.exit(0)
+        except Exception as e:
+            print(f"Error: {e}")
+            import base64
+            import os
+            for filename in ['icon.png', 'presplash.png']:
+                with open(f'assets/{filename}', 'wb') as f:
+                    f.write(base64.b64decode(b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='))
+            print("Created placeholder assets")
+            sys.exit(0)
+        PYEOF
 
     - name: Verify buildozer.spec
       run: |
@@ -90,11 +63,11 @@ EOF
           echo "Warning: buildozer.spec not found, will use defaults"
         fi
 
-    - name: Run buildozer init (optional)
+    - name: Run buildozer init
       run: |
         buildozer init || echo "Init skipped, using existing spec"
 
-    - name: Build APK with verbose output
+    - name: Build APK
       run: |
         buildozer android debug --verbose 2>&1 | tee build-full.log
 
@@ -103,9 +76,8 @@ EOF
       run: |
         echo "=== Checking for APK ==="
         find . -name "*.apk" -type f 2>/dev/null || true
-
         if [ -f "bin/*.apk" ]; then
-          echo "✓ APK found in bin/"
+          echo "APK found in bin/"
           ls -lh bin/*.apk
         elif [ -d "bin" ]; then
           echo "bin/ exists but no APK found:"
@@ -113,12 +85,11 @@ EOF
         else
           echo "bin/ directory not found"
         fi
-
         echo ""
         echo "=== Last 50 lines of build log ==="
         tail -50 build-full.log
 
-    - name: Upload any APK found
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: ubtech-robot-control-apk
@@ -128,7 +99,7 @@ EOF
         retention-days: 30
         if-no-files-found: ignore
 
-    - name: Upload full build log
+    - name: Upload build log
       uses: actions/upload-artifact@v4
       if: always()
       with:
