@@ -1,0 +1,8 @@
+kivy==2.3.0
+kivymd==1.1.1
+buildozer==1.5.0
+pyjnius==1.6.1
+android
+plyer==2.1.0
+kivy-garden.mapview
+kivy_garden

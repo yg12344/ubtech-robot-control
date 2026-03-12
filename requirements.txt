@@ -1,0 +1,9 @@
+PyQt6==6.6.1
+pyqt6-tools==6.6.1
+pyserial==3.5
+requests==2.31.0
+SpeechRecognition==3.10.1
+pyaudio==0.2.14
+matplotlib==3.8.2
+numpy==1.26.3
+pyyaml==6.0.1

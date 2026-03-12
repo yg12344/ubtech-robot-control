@@ -1,0 +1,214 @@
+#:kivy 1.11.0
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # 标题栏
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            canvas.before:
+                Color:
+                    rgba: 0.16, 0.24, 0.32, 1  # Dark blue
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            MDLabel:
+                text: '优必选小微控制'
+                theme_text_color: 'Custom'
+                text_color: 1, 1, 1, 1
+                font_size: dp(20)
+                halign: 'center'
+                valign: 'center'
+
+        # 连接状态
+        BoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            spacing: dp(10)
+            padding: dp(10)
+
+            MDLabel:
+                text: '● ' + ('已连接' if app.robot_controller.is_connected() else '未连接')
+                theme_text_color: 'Custom'
+                text_color: (0.15, 0.8, 0.44, 1) if app.robot_controller.is_connected() else (0.93, 0.26, 0.26, 1)
+                font_size: dp(14)
+                size_hint_x: 0.6
+
+            MDRaisedButton:
+                text: '连接机器人'
+                size_hint_x: 0.4
+                md_bg_color: app.theme_cls.primary_color
+                on_release: root.connect_robot()
+
+        # 功能按钮网格
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(10)
+                padding: dp(10)
+
+                # 第一行
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(120)
+                    spacing: dp(10)
+
+                    MDCard:
+                        size_hint_x: 0.5
+                        radius: [dp(10)]
+                        padding: dp(10)
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            pos: self.parent.pos
+
+                            MDIcon:
+                                icon: 'robot'
+                                theme_text_color: 'Custom'
+                                text_color: 0.2, 0.6, 0.87, 1
+                                font_size: dp(40)
+                                halign: 'center'
+
+                            MDLabel:
+                                text: '运动控制'
+                                theme_text_color: 'Custom'
+                                text_color: 0.18, 0.18, 0.18, 1
+                                font_size: dp(14)
+                                halign: 'center'
+
+                            MDRaisedButton:
+                                text: '进入'
+                                size_hint_y: None
+                                height: dp(35)
+                                pos_hint: {'center_x': 0.5}
+                                md_bg_color: 0.2, 0.6, 0.87, 1
+                                on_release: app.sm.current = 'motion'
+
+                    MDCard:
+                        size_hint_x: 0.5
+                        radius: [dp(10)]
+                        padding: dp(10)
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            pos: self.parent.pos
+
+                            MDIcon:
+                                icon: 'microphone'
+                                theme_text_color: 'Custom'
+                                text_color: 0.6, 0.18, 0.6, 1
+                                font_size: dp(40)
+                                halign: 'center'
+
+                            MDLabel:
+                                text: '语音交互'
+                                theme_text_color: 'Custom'
+                                text_color: 0.18, 0.18, 0.18, 1
+                                font_size: dp(14)
+                                halign: 'center'
+
+                            MDRaisedButton:
+                                text: '进入'
+                                size_hint_y: None
+                                height: dp(35)
+                                pos_hint: {'center_x': 0.5}
+                                md_bg_color: 0.6, 0.18, 0.6, 1
+                                on_release: app.sm.current = 'voice'
+
+                # 第二行
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(120)
+                    spacing: dp(10)
+
+                    MDCard:
+                        size_hint_x: 0.5
+                        radius: [dp(10)]
+                        padding: dp(10)
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            pos: self.parent.pos
+
+                            MDIcon:
+                                icon: 'code-braces'
+                                theme_text_color: 'Custom'
+                                text_color: 0.95, 0.54, 0.4, 1
+                                font_size: dp(40)
+                                halign: 'center'
+
+                            MDLabel:
+                                text: '编程教学'
+                                theme_text_color: 'Custom'
+                                text_color: 0.18, 0.18, 0.18, 1
+                                font_size: dp(14)
+                                halign: 'center'
+
+                            MDRaisedButton:
+                                text: '进入'
+                                size_hint_y: None
+                                height: dp(35)
+                                pos_hint: {'center_x': 0.5}
+                                md_bg_color: 0.95, 0.54, 0.4, 1
+                                on_release: app.sm.current = 'code'
+
+                    MDCard:
+                        size_hint_x: 0.5
+                        radius: [dp(10)]
+                        padding: dp(10)
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            pos: self.parent.pos
+
+                            MDIcon:
+                                icon: 'chart-line'
+                                theme_text_color: 'Custom'
+                                text_color: 0.15, 0.73, 0.28, 1
+                                font_size: dp(40)
+                                halign: 'center'
+
+                            MDLabel:
+                                text: '数据监控'
+                                theme_text_color: 'Custom'
+                                text_color: 0.18, 0.18, 0.18, 1
+                                font_size: dp(14)
+                                halign: 'center'
+
+                            MDRaisedButton:
+                                text: '进入'
+                                size_hint_y: None
+                                height: dp(35)
+                                pos_hint: {'center_x': 0.5}
+                                md_bg_color: 0.15, 0.73, 0.28, 1
+                                on_release: app.sm.current = 'monitor'
+
+        # 底部导航
+        MDBottomAppBar:
+            MDToolbar:
+                title: '设置'
+                action_type: 'center'
+                type: 'bottom'
+                on_action_button: app.sm.current = 'settings'
+                left_action_items: [['arrow-left', lambda x: app.sm.current = 'main']]
+
+<Screen@BaseScreen>:
+    MDScreen:
+
+        MDTopAppBar:
+            title: root.title
+            elevation: 4
+            left_action_items: [['arrow-left', lambda x: app.sm.current = 'main']]
+            right_action_items: root.right_action_items
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: dp(10)
+            spacing: dp(10)
+
+            root.content
